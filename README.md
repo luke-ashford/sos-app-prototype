@@ -1,4 +1,4 @@
-# SOS App Prootyype, a University Assignment
+# SOS App Prototype, a University Assignment
 Completed as a part of CM3202 Emerging Technology module at Cardiff University
 
 This app allows a user to toggle between into and out of an SOS state, by pressing either the SOS button, or the cancel button.
