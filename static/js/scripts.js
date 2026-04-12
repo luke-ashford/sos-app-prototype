@@ -13,10 +13,13 @@ sosButton.addEventListener("click", async () => {
     isActive = true;
     updateUI();
 
-    getLocation();
     getMediaRecorder();
 
     try {
+        const position = await getLocation();
+        lat = position.coords.latitude;
+        long = position.coords.longitude;
+
         await fetch("/sos", {
             method: "POST",
             headers: {
@@ -50,21 +53,13 @@ function updateUI() {
 }
 
 function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(success, error);
-        console.log("Lat: " + position.coords.latitude + " Long: " + position.coords.longitude);
-    } else {
-        console.log("Geolocation is not supported by this browser.");
-    }
-}
-
-function success(position) {
-    lat = position.coords.latitude;
-    long = position.coords.longitude;
-}
-
-function error() {
-    console.log("Default lat & long");
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+        } else {
+            reject(new Error("Geolocation is not supported by this browser."));
+        }
+    });
 }
 
 function getMediaRecorder() {
