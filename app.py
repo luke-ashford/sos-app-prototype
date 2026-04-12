@@ -30,6 +30,4 @@ def audio():
 if __name__ == '__main__':
     app.run()
 
-# TODO: Build Website
-# TODO: Stream Audio
 # TODO: Setup Kafka
