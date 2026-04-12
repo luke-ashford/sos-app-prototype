@@ -64,11 +64,14 @@ function getLocation() {
 
 function getMediaRecorder() {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+
         console.log("getUserMedia supported.");
+
         navigator.mediaDevices
             .getUserMedia({
                 audio: true
             })
+
             .then((stream) => {
                 const mediaRecorder = new MediaRecorder(stream);
                 const chunks = [];
@@ -98,9 +101,11 @@ function getMediaRecorder() {
                     }
                 }, 5000);
             })
+
             .catch((err) => {
                 console.error(`The following getUserMedia error occurred: ${err}`);
             });
+
     } else {
         console.log("getUserMedia not supported on your browser!");
     }
