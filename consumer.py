@@ -5,7 +5,7 @@ counter = randint(1, 1000000)
 
 consumer = KafkaConsumer(
     'audio',
-    bootstrap_servers=['46.33.141.152:9092']
+    bootstrap_servers='kafka.cm3202.uk'
 )
 
 for msg in consumer:
