@@ -3,10 +3,10 @@ from kafka import KafkaProducer
 from base64 import b64encode
 
 app = Flask(__name__)
-producer = KafkaProducer(bootstrap_servers='kafka.cm3202.uk')
+producer = KafkaProducer(bootstrap_servers='kafka.cm3202.uk', max_request_size=10485880)
 
 @app.route('/')
-def hello_world():
+def index():
     return render_template('index.html')
 
 
@@ -28,5 +28,3 @@ def audio():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
-
-# TODO: Setup Kafka
