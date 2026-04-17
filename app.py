@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request
-from random import randint
+from kafka import KafkaProducer
+from base64 import b64encode
 
 app = Flask(__name__)
-counter = randint(1, 1000000)
+
+
+producer = KafkaProducer(bootstrap_servers='46.33.141.152:9092')
 
 
 @app.route('/')
@@ -17,17 +20,16 @@ def sos():
 
 @app.route('/audio', methods=['POST'])
 def audio():
-    global counter
-    raw_data = request.data  # binary audio
+    raw_data = request.data
+    encoded = b64encode(raw_data) # binary audio
 
-    with open(f"uploads/recording_{counter}.webm", "wb") as f:
-        f.write(raw_data)
-        counter += 1
+    future = producer.send('audio', value=encoded, headers=[('content-encoding', b'base64')])
+    future.get()
 
     return ("", 204)
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    app.run()
 
 # TODO: Setup Kafka
