@@ -20,19 +20,11 @@ sosButton.addEventListener("click", async () => {
         lat = position.coords.latitude;
         long = position.coords.longitude;
 
-        await fetch("/sos", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                lat: lat,
-                long: long
-            })
-        });
     } catch (error) {
-        console.error("Failed to send SOS request:", error);
+        console.error("Failed to get coordinates", error);
     }
+
+    await getNotifications();
 });
 
 cancelButton.addEventListener("click", () => {
@@ -109,4 +101,30 @@ function getMediaRecorder() {
     } else {
         console.log("getUserMedia not supported on your browser!");
     }
+}
+
+async function getNotifications() {
+    const notificationsInterval = setInterval(async () => {
+        if (isActive) {
+            const response = await fetch("/notifications");
+            const data = await response.json();
+
+            console.log(data)
+
+            if (data !== null) {
+
+                let inner = "";
+
+                for (const notification of data) {
+                    inner += `<div class="notification-item">${notification}</div>`
+                }
+
+                document.getElementById("notificationsPanel").innerHTML = inner;
+
+            }
+
+        } else {
+            clearInterval(notificationsInterval);
+        }
+    }, 1000);
 }
