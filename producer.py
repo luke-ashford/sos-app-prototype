@@ -1,7 +1,7 @@
 from json import dumps
 from kafka import KafkaProducer
 
-patient_id = 119184
+patient_id = 196615
 
 producer = KafkaProducer(
     bootstrap_servers='kafka.cm3202.uk',

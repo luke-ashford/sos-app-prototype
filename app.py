@@ -38,9 +38,7 @@ def index():
     patient = Patient()
     session['patient_id'] = patient.id
 
-    print(patient.id)
-
-    return render_template('index.html')
+    return render_template('index.html', patient_id=patient.id)
 
 @app.route('/notifications', methods=['GET'])
 def get_notifications():
@@ -49,7 +47,6 @@ def get_notifications():
         return ("", 500)
 
     notifications = patients[session["patient_id"]].notifications
-    notifications.reverse()
     return jsonify(notifications)
 
 @app.route('/audio', methods=['POST'])
@@ -77,7 +74,9 @@ def consume():
         patient_id = msg.value["patient_id"]
         if patient_id in patients:
             patient = patients[patient_id]
+            patient.notifications.reverse()
             patient.notifications.append(msg.value["notification"])
+            patient.notifications.reverse()
 
 if __name__ == '__main__':
     Thread(target=consume, daemon=True).start()

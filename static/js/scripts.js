@@ -3,11 +3,15 @@ const cancelButton = document.getElementById("cancelButton");
 const iphoneScreen = document.getElementById("iphoneScreen");
 const homeView = document.getElementById("homeView");
 const activeView = document.getElementById("activeView");
+const pushButton = document.getElementById("pushButton")
+const notificationsPanel = document.getElementById("notificationsPanel")
 
 let isActive = false;
 
 let lat = 51.481285;
 let long = -3.180642;
+
+let mediaRecorder = null
 
 sosButton.addEventListener("click", async () => {
     isActive = true;
@@ -30,6 +34,16 @@ sosButton.addEventListener("click", async () => {
 cancelButton.addEventListener("click", () => {
     isActive = false;
     updateUI();
+
+    if (mediaRecorder !== null) {
+        mediaRecorder.stop();
+    }
+});
+
+pushButton.addEventListener("click", () => {
+    if (isActive && mediaRecorder !== null) {
+        mediaRecorder.requestData();
+    }
 });
 
 function updateUI() {
@@ -65,7 +79,7 @@ function getMediaRecorder() {
             })
 
             .then((stream) => {
-                const mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder = new MediaRecorder(stream);
                 const chunks = [];
 
                 mediaRecorder.addEventListener("dataavailable", (e) => {
@@ -83,15 +97,6 @@ function getMediaRecorder() {
                 });
 
                 mediaRecorder.start();
-
-                const intervalVal = setInterval(() => {
-                    if (isActive) {
-                        mediaRecorder.requestData();
-                    } else {
-                        mediaRecorder.stop();
-                        clearInterval(intervalVal);
-                    }
-                }, 5000);
             })
 
             .catch((err) => {
@@ -109,9 +114,7 @@ async function getNotifications() {
             const response = await fetch("/notifications");
             const data = await response.json();
 
-            console.log(data)
-
-            if (data !== null) {
+            if (data !== null && data.length > 0) {
 
                 let inner = "";
 
@@ -119,7 +122,7 @@ async function getNotifications() {
                     inner += `<div class="notification-item">${notification}</div>`
                 }
 
-                document.getElementById("notificationsPanel").innerHTML = inner;
+                notificationsPanel.innerHTML = inner;
 
             }
 
